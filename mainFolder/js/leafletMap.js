@@ -8,6 +8,7 @@ class LeafletMap {
   constructor(_config, _data) {
     this.config = {
       parentElement: _config.parentElement,
+      tooltipPadding: _config.tooltipPadding || 15,
     }
     this.data = _data;
     this.initVis();
@@ -69,28 +70,12 @@ class LeafletMap {
                 .duration('150') //how long we are transitioning between the two states (works like keyframes)
                 .attr("fill", "red") //change the fill
                 .attr('r', 4); //change radius
-
-              //create a tool tip
-              d3.select('#tooltip')
-                  .style('opacity', 1)
-                  .style('z-index', 1000000)
-                    // Format number with million and thousand separator
-                  .html(`<div class="tooltip-label">Info: ${d.DESCRIPTION}</div>`);
-
             })
-          .on('mousemove', (event) => {
-              //position the tooltip
-              d3.select('#tooltip')
-                .style('left', (event.pageX + 10) + 'px')   
-                .style('top', (event.pageY + 10) + 'px');
-            })              
           .on('mouseleave', function() { //function to add mouseover event
               d3.select(this).transition() //D3 selects the object we have moused over in order to perform operations on it
                 .duration('150') //how long we are transitioning between the two states (works like keyframes)
                 .attr("fill", "steelblue") //change the fill
                 .attr('r', 3) //change radius
-
-              d3.select('#tooltip').style('opacity', 0);//turn off the tooltip
 
             })
           .on('click', (event, d) => { //experimental feature I was trying- click on point and then fly to it
@@ -133,8 +118,35 @@ class LeafletMap {
 
   renderVis() {
     let vis = this;
-
-    //not using right now... 
  
+    vis.Dots
+      .on('mouseover', (event,d) => {
+        d3.select('#tooltip')
+          .style('display', 'block')
+          .style('opacity', 1)
+          .style('z-index', 999999)
+          .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')   
+          .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
+          .html(`
+            <div class="tooltip-title">${d.SERVICE_NAME}</div>
+            <div><i>${d.STATUS}</i></div>
+            <ul>
+              <li>${d.REQUESTED_DATE}</li>
+              <li>${d.UPDATED_DATE}</li>
+              <li>${d.AGENCY_RESPONSIBLE}</li>
+              <li>${d.DESCRIPTION}</li>
+            </ul>
+          `);
+      })
+      .on('mousemove', (event) => {
+        //position the tooltip
+        d3.select('#tooltip')
+          .style('left', (event.pageX + 10) + 'px')   
+          .style('top', (event.pageY + 10) + 'px');
+      })              
+      .on('mouseleave', () => {
+        d3.select('#tooltip').style('opacity', 0);
+      });
+
   }
 }
