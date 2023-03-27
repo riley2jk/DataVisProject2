@@ -95,7 +95,13 @@ class LeafletMap {
                     .style("opacity", 1)
                     .style("z-index", 10000000)
                     .html(
-                        `<div class="tooltip-label">Info: ${d.DESCRIPTION}</div>`
+                        `<div class="tooltip-title">Description: ${d.DESCRIPTION}</div>
+                        <div><i>${d.STATUS}</i></div>
+                        <ul>
+                          <li>${d.AGENCY_RESPONSIBLE}</li>
+                          <li>${d.REQUESTED_DATE}</li>
+                          <li>Last updated: ${d.UPDATED_DATE}</li>
+                        </ul>`
                     );
             })
             .on("mousemove", (event) => {
