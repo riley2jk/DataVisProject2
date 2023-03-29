@@ -1,5 +1,4 @@
 console.log("Hello World");
-console.log("Hello World");
 
 d3.tsv("data/cincyData.txt")
     .then((data) => {

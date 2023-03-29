@@ -53,3 +53,19 @@
   margin: 5px 0 0 0;
   padding-left: 20px;
 }
+
+.chart-area {
+  fill: #e9eff5;
+}
+
+.chart-line {
+  fill: none;
+  stroke: #339ab3;
+  stroke-width: 2px;
+}
+
+.chart-title {
+  min-width: 100%;
+  text-align: center;
+  margin: 5px;
+}

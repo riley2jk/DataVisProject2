@@ -32,6 +32,8 @@ class Timeline {
             vis.config.margin.top -
             vis.config.margin.bottom;
 
+        console.log(vis.height);
+
         vis.xScale = d3.scaleTime().range([0, vis.width]);
 
         vis.yScale = d3.scaleLinear().range([vis.height, 0]).nice();
