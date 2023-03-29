@@ -10,6 +10,8 @@ d3.tsv('data/cincyData.tsv')
     });
 
     // Initialize chart and then show it
-    leafletMap = new LeafletMap({ parentElement: '#my-map'}, data);
+    leafletMap = new LeafletMap({ parentElement: "#my-map" }, data);
 
-  })
+    timeline = new Timeline({parentElement: "#timeline"}, data);
+    timeline.updateVis();
+});
