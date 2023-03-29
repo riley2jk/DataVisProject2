@@ -2,9 +2,38 @@
   width: 100%;
   height: 500px;
 }
+#buttons {
+  font-size: 11px;
+  display: flex;
+}
+.btn {
+  font-size: 11px;
+  color: #adadad;
+}
+#agencybutton:hover, #agencybutton:focus {
+  text-decoration: none;
+  box-shadow: none;
+}
+#servicebutton:hover, #servicebutton:focus {
+  text-decoration: none;
+  box-shadow: none;
+}
+#defaultbutton:hover, #defaultbutton:focus {
+  text-decoration: none;
+  box-shadow: none;
+}
+#datebutton:hover, #datebutton:focus {
+  text-decoration: none;
+  box-shadow: none;
+}
+#monthbutton:hover, #monthbutton:focus {
+  text-decoration: none;
+  box-shadow: none;
+}
 
 #tooltip {
   position: absolute;
+  opacity: 0;
   background: #fff;
   box-shadow: 3px 3px 3px 0px rgb(92 92 92 / 0.5);
   border: 1px solid #ddd;
