@@ -115,18 +115,10 @@ class LeafletMap {
                 d3.select("#tooltip")
                     .style("left", event.pageX + 10 + "px")
                     .style("top", event.pageY + 10 + "px");
-            })
-            .on("mouseleave", function () {
-                //function to add mouseover event
-                d3.select(this)
-                    .transition() //D3 selects the object we have moused over in order to perform operations on it
-                    .duration("150") //how long we are transitioning between the two states (works like keyframes)
-                    .attr("r", 3); //change radius
-
-                d3.select("#tooltip")
-                    .style("opacity", 0)
-                    .style("background", "#000");
             });
+        // .on("mouseleave", () => {
+
+        // });
 
         //handler here for updating the map, as you zoom in and out
         vis.theMap.on("zoomend", function () {
@@ -700,6 +692,16 @@ class LeafletMap {
             } else if (vis.config.colorScaleString == "Default") {
                 vis.Dots.transition().attr("fill", "steelblue");
             }
+
+            //function to add mouseover event
+            d3.select(this)
+                .transition() //D3 selects the object we have moused over in order to perform operations on it
+                .duration("150") //how long we are transitioning between the two states (works like keyframes)
+                .attr("r", 3); //change radius
+
+            d3.select("#tooltip")
+                .style("opacity", 0)
+                .style("background", "#fff");
         });
 
         console.log(vis.config.colorScaleString);
