@@ -13,10 +13,10 @@ d3.tsv("data/cincyData.txt")
         leafletMap = new LeafletMap({ parentElement: "#my-map" }, data);
         leafletMap.updateVis();
 
-        timeline = new Timeline({ parentElement: "#timeline" }, data);
-        timeline.updateVis();
+        timebar = new TimeBar({ parentElement: "#timebar"}, data);
+        timebar.updateVis();
     })
-    .catch((error) => console.error(error));
+    // .catch((error) => console.error(error));
 
 d3.select("#defaultbutton").on("click", (d) => {
     leafletMap.config.colorScaleString = "Default";
