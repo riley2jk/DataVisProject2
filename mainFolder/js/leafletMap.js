@@ -22,7 +22,7 @@ class LeafletMap {
             .select("#legend")
             .append("svg")
             .attr("width", 400)
-            .attr("height", 400);
+            .attr("height", 180);
         vis.config.colorScaleString = "Default";
 
         //ESRI

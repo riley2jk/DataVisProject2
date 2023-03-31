@@ -2,8 +2,7 @@ console.log("Hello World");
 
 d3.tsv("data/cincyData.txt").then((data) => {
     // Initialize scales
-    const colorScale = d3.scaleOrdinal()
-    .range(['#4682b4']) // steel blue
+    const colorScale = d3.scaleOrdinal().range(["#4682b4"]); // steel blue
 
     console.log(data);
     console.log(data.length);
@@ -17,34 +16,46 @@ d3.tsv("data/cincyData.txt").then((data) => {
     leafletMap.updateVis();
 
     // Initialize and render bar chart
-    dayofweekbarchart = new DayOfWeekBarchart({
-      parentElement: '#dayofweekbarchart',
-      colorScale: colorScale
-    }, data);
+    dayofweekbarchart = new DayOfWeekBarchart(
+        {
+            parentElement: "#dayofweekbarchart",
+            colorScale: colorScale,
+        },
+        data
+    );
     dayofweekbarchart.updateVis();
 
     // Initialize and render bar chart
-    servicetypebarchart = new ServiceTypeBarchart({
-      parentElement: '#servicetypebarchart',
-    }, data);
+    servicetypebarchart = new ServiceTypeBarchart(
+        {
+            parentElement: "#servicetypebarchart",
+        },
+        data
+    );
     servicetypebarchart.updateVis();
 
     // Initialize and render bar chart
-    updatedtimebarchart = new UpdatedTimeBarchart({
-      parentElement: '#updatedtimebarchart',
-    }, data);
+    updatedtimebarchart = new UpdatedTimeBarchart(
+        {
+            parentElement: "#updatedtimebarchart",
+        },
+        data
+    );
     updatedtimebarchart.updateVis();
 
     // Initialize and render bar chart
-    zipcodebarchart = new ZipcodeBarchart({
-      parentElement: '#zipcodebarchart',
-    }, data);
+    zipcodebarchart = new ZipcodeBarchart(
+        {
+            parentElement: "#zipcodebarchart",
+        },
+        data
+    );
     zipcodebarchart.updateVis();
 
-    timebar = new TimeBar({ parentElement: "#timebar"}, data);
+    timebar = new TimeBar({ parentElement: "#timebar" }, data);
     timebar.updateVis();
-})
-    // .catch((error) => console.error(error));
+});
+// .catch((error) => console.error(error));
 
 d3.select("#defaultbutton").on("click", (d) => {
     leafletMap.config.colorScaleString = "Default";
@@ -66,3 +77,40 @@ d3.select("#monthbutton").on("click", (d) => {
     leafletMap.config.colorScaleString = "byMonth";
     leafletMap.updateVis();
 });
+
+const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+];
+const days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+];
+
+function formDate(date) {
+    return (
+        days[date.getDay()] +
+        ", " +
+        months[date.getMonth()] +
+        " " +
+        date.getDate() +
+        ", " +
+        date.getFullYear()
+    );
+    //return new Intl.DateTimeFormat("en-US").format(dateObj);
+}
