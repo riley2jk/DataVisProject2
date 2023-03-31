@@ -18,7 +18,11 @@ class LeafletMap {
      */
     initVis() {
         let vis = this;
-        vis.legend = d3.select("#legend").append("svg").attr("width", 400).attr("height", 400)
+        vis.legend = d3
+            .select("#legend")
+            .append("svg")
+            .attr("width", 400)
+            .attr("height", 400);
         vis.config.colorScaleString = "Default";
 
         //ESRI
@@ -111,23 +115,10 @@ class LeafletMap {
                 d3.select("#tooltip")
                     .style("left", event.pageX + 10 + "px")
                     .style("top", event.pageY + 10 + "px");
-            })
-            .on("mouseleave", function () {
-                //function to add mouseover event
-                d3.select(this)
-                    .transition() //D3 selects the object we have moused over in order to perform operations on it
-                    .duration("150") //how long we are transitioning between the two states (works like keyframes)
-                    .attr("r", 3); //change radius
-
-                d3.select("#tooltip").style("opacity", 0);
-            })
-            .on("click", (event, d) => {
-                //experimental feature I was trying- click on point and then fly to it
-                // vis.newZoom = vis.theMap.getZoom()+2;
-                // if( vis.newZoom > 18)
-                //  vis.newZoom = 18;
-                // vis.theMap.flyTo([d.latitude, d.longitude], vis.newZoom);
             });
+        // .on("mouseleave", () => {
+
+        // });
 
         //handler here for updating the map, as you zoom in and out
         vis.theMap.on("zoomend", function () {
@@ -151,239 +142,568 @@ class LeafletMap {
         // }
 
         //redraw based on new zoom- need to recalculate on-screen position
-        vis.Dots
-            .attr(
-                "cx",
-                (d) => vis.theMap.latLngToLayerPoint([d.latitude, d.longitude]).x
-            )
+        vis.Dots.attr(
+            "cx",
+            (d) => vis.theMap.latLngToLayerPoint([d.latitude, d.longitude]).x
+        )
             .attr(
                 "cy",
                 (d) =>
                     vis.theMap.latLngToLayerPoint([d.latitude, d.longitude]).y
             )
             .attr("r", vis.radiusSize);
-        
+
         vis.renderVis();
     }
 
     renderVis() {
         let vis = this;
 
-        vis.colorBy = d3.scaleOrdinal()
-            .range("steelblue")
+        vis.colorBy = d3.scaleOrdinal().range("steelblue");
 
-        if (vis.config.colorScaleString == "byService"){
-            vis.colorBy = d3.scaleOrdinal()
-            .domain(["Metal Furniture, Spec Collectn", "Trash, request for collection", "Yard waste,rtc", "Building, residential", 
-            "Default, police (and junk veh)", "Litter, private property", "Slippery streets, request", "Pothole, repair", 
-            "Trash cart, registration"])
-            .range(["#1f77b4","#ff7f0e","#2ca02c","#d62728","#9467bd","#8c564b","#e377c2","#7f7f7f","#bcbd22"])
+        if (vis.config.colorScaleString == "byService") {
+            vis.colorBy = d3
+                .scaleOrdinal()
+                .domain([
+                    "Metal Furniture, Spec Collectn",
+                    "Trash, request for collection",
+                    "Yard waste,rtc",
+                    "Building, residential",
+                    "Default, police (and junk veh)",
+                    "Litter, private property",
+                    "Slippery streets, request",
+                    "Pothole, repair",
+                    "Trash cart, registration",
+                ])
+                .range([
+                    "#1f77b4",
+                    "#ff7f0e",
+                    "#2ca02c",
+                    "#d62728",
+                    "#9467bd",
+                    "#8c564b",
+                    "#e377c2",
+                    "#7f7f7f",
+                    "#bcbd22",
+                ]);
 
-            vis.Dots
-                .attr("fill", d => vis.colorBy(d.SERVICE_NAME))
+            vis.Dots.attr("fill", (d) => vis.colorBy(d.SERVICE_NAME));
 
             // PLEASE DONT COMMENT ON HOW UGLY THIS LOOKS THANK YOU
-            vis.legend.selectAll('*').remove(); // remove legend elements before adding new one
-            vis.legend.append('circle').attr('cx', 10).attr('cy', 10).attr('r', 5).attr('stroke', 'black').attr('fill', '#1f77b4')
-            vis.legend.append('circle').attr('cx', 10).attr('cy', 30).attr('r', 5).attr('stroke', 'black').attr('fill', '#ff7f0e')
-            vis.legend.append('circle').attr('cx', 10).attr('cy', 50).attr('r', 5).attr('stroke', 'black').attr('fill', '#2ca02c')
-            vis.legend.append('circle').attr('cx', 10).attr('cy', 70).attr('r', 5).attr('stroke', 'black').attr('fill', '#d62728')
-            vis.legend.append('circle').attr('cx', 10).attr('cy', 90).attr('r', 5).attr('stroke', 'black').attr('fill', '#9467bd')
-            vis.legend.append('circle').attr('cx', 10).attr('cy', 110).attr('r', 5).attr('stroke', 'black').attr('fill', '#8c564b')
-            vis.legend.append('circle').attr('cx', 10).attr('cy', 130).attr('r', 5).attr('stroke', 'black').attr('fill', '#e377c2')
-            vis.legend.append('circle').attr('cx', 10).attr('cy', 150).attr('r', 5).attr('stroke', 'black').attr('fill', '#7f7f7f')
-            vis.legend.append('circle').attr('cx', 10).attr('cy', 170).attr('r', 5).attr('stroke', 'black').attr('fill', '#bcbd22')
-            vis.legend.append("text").attr("x", 20).attr("y", 10).text("Metal Furniture, Spec Collectn").style("font-size", "15px").attr("alignment-baseline","middle")
-            vis.legend.append("text").attr("x", 20).attr("y", 30).text("Trash, request for collection").style("font-size", "15px").attr("alignment-baseline","middle")
-            vis.legend.append("text").attr("x", 20).attr("y", 50).text("Yard waste,rtc").style("font-size", "15px").attr("alignment-baseline","middle")
-            vis.legend.append("text").attr("x", 20).attr("y", 70).text("Building, residential").style("font-size", "15px").attr("alignment-baseline","middle")
-            vis.legend.append("text").attr("x", 20).attr("y", 90).text("Default, police (and junk veh)").style("font-size", "15px").attr("alignment-baseline","middle")
-            vis.legend.append("text").attr("x", 20).attr("y", 110).text("Litter, private property").style("font-size", "15px").attr("alignment-baseline","middle")
-            vis.legend.append("text").attr("x", 20).attr("y", 130).text("Slippery streets, request").style("font-size", "15px").attr("alignment-baseline","middle")
-            vis.legend.append("text").attr("x", 20).attr("y", 150).text("Pothole, repair").style("font-size", "15px").attr("alignment-baseline","middle")
-            vis.legend.append("text").attr("x", 20).attr("y", 170).text("Trash cart, registration").style("font-size", "15px").attr("alignment-baseline","middle")
-        }
-        else if (vis.config.colorScaleString == "byAgency"){
-            vis.colorBy = d3.scaleOrdinal()
-            .domain(["Public Services", "Cinc Building Dept", "Cinc Health Dept", "Dept of Trans and Eng", 
-            "City Manager's Office", "Police Department", "Park Department", "Cin Water Works"])
-            .range(["#d53e4f","#f46d43","#fdae61","#fee08b","#e6f598","#abdda4","#66c2a5","#3288bd"])
+            vis.legend.selectAll("*").remove(); // remove legend elements before adding new one
+            vis.legend
+                .append("circle")
+                .attr("cx", 10)
+                .attr("cy", 10)
+                .attr("r", 5)
+                .attr("stroke", "black")
+                .attr("fill", "#1f77b4");
+            vis.legend
+                .append("circle")
+                .attr("cx", 10)
+                .attr("cy", 30)
+                .attr("r", 5)
+                .attr("stroke", "black")
+                .attr("fill", "#ff7f0e");
+            vis.legend
+                .append("circle")
+                .attr("cx", 10)
+                .attr("cy", 50)
+                .attr("r", 5)
+                .attr("stroke", "black")
+                .attr("fill", "#2ca02c");
+            vis.legend
+                .append("circle")
+                .attr("cx", 10)
+                .attr("cy", 70)
+                .attr("r", 5)
+                .attr("stroke", "black")
+                .attr("fill", "#d62728");
+            vis.legend
+                .append("circle")
+                .attr("cx", 10)
+                .attr("cy", 90)
+                .attr("r", 5)
+                .attr("stroke", "black")
+                .attr("fill", "#9467bd");
+            vis.legend
+                .append("circle")
+                .attr("cx", 10)
+                .attr("cy", 110)
+                .attr("r", 5)
+                .attr("stroke", "black")
+                .attr("fill", "#8c564b");
+            vis.legend
+                .append("circle")
+                .attr("cx", 10)
+                .attr("cy", 130)
+                .attr("r", 5)
+                .attr("stroke", "black")
+                .attr("fill", "#e377c2");
+            vis.legend
+                .append("circle")
+                .attr("cx", 10)
+                .attr("cy", 150)
+                .attr("r", 5)
+                .attr("stroke", "black")
+                .attr("fill", "#7f7f7f");
+            vis.legend
+                .append("circle")
+                .attr("cx", 10)
+                .attr("cy", 170)
+                .attr("r", 5)
+                .attr("stroke", "black")
+                .attr("fill", "#bcbd22");
+            vis.legend
+                .append("text")
+                .attr("x", 20)
+                .attr("y", 10)
+                .text("Metal Furniture, Spec Collectn")
+                .style("font-size", "15px")
+                .attr("alignment-baseline", "middle");
+            vis.legend
+                .append("text")
+                .attr("x", 20)
+                .attr("y", 30)
+                .text("Trash, request for collection")
+                .style("font-size", "15px")
+                .attr("alignment-baseline", "middle");
+            vis.legend
+                .append("text")
+                .attr("x", 20)
+                .attr("y", 50)
+                .text("Yard waste,rtc")
+                .style("font-size", "15px")
+                .attr("alignment-baseline", "middle");
+            vis.legend
+                .append("text")
+                .attr("x", 20)
+                .attr("y", 70)
+                .text("Building, residential")
+                .style("font-size", "15px")
+                .attr("alignment-baseline", "middle");
+            vis.legend
+                .append("text")
+                .attr("x", 20)
+                .attr("y", 90)
+                .text("Default, police (and junk veh)")
+                .style("font-size", "15px")
+                .attr("alignment-baseline", "middle");
+            vis.legend
+                .append("text")
+                .attr("x", 20)
+                .attr("y", 110)
+                .text("Litter, private property")
+                .style("font-size", "15px")
+                .attr("alignment-baseline", "middle");
+            vis.legend
+                .append("text")
+                .attr("x", 20)
+                .attr("y", 130)
+                .text("Slippery streets, request")
+                .style("font-size", "15px")
+                .attr("alignment-baseline", "middle");
+            vis.legend
+                .append("text")
+                .attr("x", 20)
+                .attr("y", 150)
+                .text("Pothole, repair")
+                .style("font-size", "15px")
+                .attr("alignment-baseline", "middle");
+            vis.legend
+                .append("text")
+                .attr("x", 20)
+                .attr("y", 170)
+                .text("Trash cart, registration")
+                .style("font-size", "15px")
+                .attr("alignment-baseline", "middle");
+        } else if (vis.config.colorScaleString == "byAgency") {
+            vis.colorBy = d3
+                .scaleOrdinal()
+                .domain([
+                    "Public Services",
+                    "Cinc Building Dept",
+                    "Cinc Health Dept",
+                    "Dept of Trans and Eng",
+                    "City Manager's Office",
+                    "Police Department",
+                    "Park Department",
+                    "Cin Water Works",
+                ])
+                .range([
+                    "#d53e4f",
+                    "#f46d43",
+                    "#fdae61",
+                    "#fee08b",
+                    "#e6f598",
+                    "#abdda4",
+                    "#66c2a5",
+                    "#3288bd",
+                ]);
 
-            vis.Dots
-                .attr("fill", d => vis.colorBy(d.AGENCY_RESPONSIBLE))
+            vis.Dots.attr("fill", (d) => vis.colorBy(d.AGENCY_RESPONSIBLE));
 
-
-            vis.legend.selectAll('*').remove();
-            vis.legend.append('circle').attr('cx', 10).attr('cy', 10).attr('r', 5).attr('stroke', 'black').attr('fill', '#d53e4f')
-            vis.legend.append('circle').attr('cx', 10).attr('cy', 30).attr('r', 5).attr('stroke', 'black').attr('fill', '#f46d43')
-            vis.legend.append('circle').attr('cx', 10).attr('cy', 50).attr('r', 5).attr('stroke', 'black').attr('fill', '#fdae61')
-            vis.legend.append('circle').attr('cx', 10).attr('cy', 70).attr('r', 5).attr('stroke', 'black').attr('fill', '#fee08b')
-            vis.legend.append('circle').attr('cx', 10).attr('cy', 90).attr('r', 5).attr('stroke', 'black').attr('fill', '#e6f598')
-            vis.legend.append('circle').attr('cx', 10).attr('cy', 110).attr('r', 5).attr('stroke', 'black').attr('fill', '#abdda4')
-            vis.legend.append('circle').attr('cx', 10).attr('cy', 130).attr('r', 5).attr('stroke', 'black').attr('fill', '#66c2a5')
-            vis.legend.append('circle').attr('cx', 10).attr('cy', 150).attr('r', 5).attr('stroke', 'black').attr('fill', '#3288bd')
-            vis.legend.append("text").attr("x", 20).attr("y", 10).text("Public Services").style("font-size", "15px").attr("alignment-baseline","middle")
-            vis.legend.append("text").attr("x", 20).attr("y", 30).text("Cinc Building Dept").style("font-size", "15px").attr("alignment-baseline","middle")
-            vis.legend.append("text").attr("x", 20).attr("y", 50).text("Cinc Health Dept").style("font-size", "15px").attr("alignment-baseline","middle")
-            vis.legend.append("text").attr("x", 20).attr("y", 70).text("Dept of Trans and Eng").style("font-size", "15px").attr("alignment-baseline","middle")
-            vis.legend.append("text").attr("x", 20).attr("y", 90).text("City Manager's Office").style("font-size", "15px").attr("alignment-baseline","middle")
-            vis.legend.append("text").attr("x", 20).attr("y", 110).text("Police Department").style("font-size", "15px").attr("alignment-baseline","middle")
-            vis.legend.append("text").attr("x", 20).attr("y", 130).text("Park Department").style("font-size", "15px").attr("alignment-baseline","middle")
-            vis.legend.append("text").attr("x", 20).attr("y", 150).text("Cin Water Works").style("font-size", "15px").attr("alignment-baseline","middle")
-        }
-        else if (vis.config.colorScaleString == "byDate"){
-            let updatedBetween = []
-            for (let i=0;i<vis.data.length;i++){
-                let daysBetween = vis.data[i].UPDATED_DATE.split('/')[1] - vis.data[i].REQUESTED_DATE.split('/')[1];
-                switch (daysBetween){
+            vis.legend.selectAll("*").remove();
+            vis.legend
+                .append("circle")
+                .attr("cx", 10)
+                .attr("cy", 10)
+                .attr("r", 5)
+                .attr("stroke", "black")
+                .attr("fill", "#d53e4f");
+            vis.legend
+                .append("circle")
+                .attr("cx", 10)
+                .attr("cy", 30)
+                .attr("r", 5)
+                .attr("stroke", "black")
+                .attr("fill", "#f46d43");
+            vis.legend
+                .append("circle")
+                .attr("cx", 10)
+                .attr("cy", 50)
+                .attr("r", 5)
+                .attr("stroke", "black")
+                .attr("fill", "#fdae61");
+            vis.legend
+                .append("circle")
+                .attr("cx", 10)
+                .attr("cy", 70)
+                .attr("r", 5)
+                .attr("stroke", "black")
+                .attr("fill", "#fee08b");
+            vis.legend
+                .append("circle")
+                .attr("cx", 10)
+                .attr("cy", 90)
+                .attr("r", 5)
+                .attr("stroke", "black")
+                .attr("fill", "#e6f598");
+            vis.legend
+                .append("circle")
+                .attr("cx", 10)
+                .attr("cy", 110)
+                .attr("r", 5)
+                .attr("stroke", "black")
+                .attr("fill", "#abdda4");
+            vis.legend
+                .append("circle")
+                .attr("cx", 10)
+                .attr("cy", 130)
+                .attr("r", 5)
+                .attr("stroke", "black")
+                .attr("fill", "#66c2a5");
+            vis.legend
+                .append("circle")
+                .attr("cx", 10)
+                .attr("cy", 150)
+                .attr("r", 5)
+                .attr("stroke", "black")
+                .attr("fill", "#3288bd");
+            vis.legend
+                .append("text")
+                .attr("x", 20)
+                .attr("y", 10)
+                .text("Public Services")
+                .style("font-size", "15px")
+                .attr("alignment-baseline", "middle");
+            vis.legend
+                .append("text")
+                .attr("x", 20)
+                .attr("y", 30)
+                .text("Cinc Building Dept")
+                .style("font-size", "15px")
+                .attr("alignment-baseline", "middle");
+            vis.legend
+                .append("text")
+                .attr("x", 20)
+                .attr("y", 50)
+                .text("Cinc Health Dept")
+                .style("font-size", "15px")
+                .attr("alignment-baseline", "middle");
+            vis.legend
+                .append("text")
+                .attr("x", 20)
+                .attr("y", 70)
+                .text("Dept of Trans and Eng")
+                .style("font-size", "15px")
+                .attr("alignment-baseline", "middle");
+            vis.legend
+                .append("text")
+                .attr("x", 20)
+                .attr("y", 90)
+                .text("City Manager's Office")
+                .style("font-size", "15px")
+                .attr("alignment-baseline", "middle");
+            vis.legend
+                .append("text")
+                .attr("x", 20)
+                .attr("y", 110)
+                .text("Police Department")
+                .style("font-size", "15px")
+                .attr("alignment-baseline", "middle");
+            vis.legend
+                .append("text")
+                .attr("x", 20)
+                .attr("y", 130)
+                .text("Park Department")
+                .style("font-size", "15px")
+                .attr("alignment-baseline", "middle");
+            vis.legend
+                .append("text")
+                .attr("x", 20)
+                .attr("y", 150)
+                .text("Cin Water Works")
+                .style("font-size", "15px")
+                .attr("alignment-baseline", "middle");
+        } else if (vis.config.colorScaleString == "byDate") {
+            let updatedBetween = [];
+            for (let i = 0; i < vis.data.length; i++) {
+                let daysBetween =
+                    vis.data[i].UPDATED_DATE.split("/")[1] -
+                    vis.data[i].REQUESTED_DATE.split("/")[1];
+                switch (daysBetween) {
                     case 0:
                     case 1:
-                        daysBetween = "0-1"
+                        daysBetween = "0-1";
                         break;
                     case 2:
                     case 3:
-                        daysBetween = "2-3"
+                        daysBetween = "2-3";
                         break;
                     case 4:
                     case 5:
-                        daysBetween = "4-5"
+                        daysBetween = "4-5";
                         break;
                     default:
-                        daysBetween = "6+"
+                        daysBetween = "6+";
                         break;
-
                 }
-                updatedBetween.push(daysBetween)
+                updatedBetween.push(daysBetween);
             }
-            vis.colorBy = d3.scaleOrdinal()
+            vis.colorBy = d3
+                .scaleOrdinal()
                 .domain(["0-1", "2-3", "4-5", "6+"])
-                .range(["#1a9641","#a6d96a","#fdae61","#d7191c"])
-            
-            vis.Dots
-                .data(updatedBetween)
-                .attr("fill", function(d){return vis.colorBy(d)})
+                .range(["#1a9641", "#a6d96a", "#fdae61", "#d7191c"]);
 
-            vis.Dots
-                .data(vis.data)
+            vis.Dots.data(updatedBetween).attr("fill", function (d) {
+                return vis.colorBy(d);
+            });
 
-            vis.legend.selectAll('*').remove();
-            vis.legend.append('circle').attr('cx', 10).attr('cy', 10).attr('r', 5).attr('stroke', 'black').attr('fill', '#1a9641')
-            vis.legend.append('circle').attr('cx', 10).attr('cy', 30).attr('r', 5).attr('stroke', 'black').attr('fill', '#a6d96a')
-            vis.legend.append('circle').attr('cx', 10).attr('cy', 50).attr('r', 5).attr('stroke', 'black').attr('fill', '#fdae61')
-            vis.legend.append('circle').attr('cx', 10).attr('cy', 70).attr('r', 5).attr('stroke', 'black').attr('fill', '#d7191c')
-            vis.legend.append("text").attr("x", 20).attr("y", 10).text("0-1 Days").style("font-size", "15px").attr("alignment-baseline","middle")
-            vis.legend.append("text").attr("x", 20).attr("y", 30).text("2-3 Days").style("font-size", "15px").attr("alignment-baseline","middle")
-            vis.legend.append("text").attr("x", 20).attr("y", 50).text("4-5 Days").style("font-size", "15px").attr("alignment-baseline","middle")
-            vis.legend.append("text").attr("x", 20).attr("y", 70).text("6+ Days").style("font-size", "15px").attr("alignment-baseline","middle")
-        }
-        else if (vis.config.colorScaleString == "byMonth"){
-            vis.colorBy = d3.scaleOrdinal()
+            vis.Dots.data(vis.data);
+
+            vis.legend.selectAll("*").remove();
+            vis.legend
+                .append("circle")
+                .attr("cx", 10)
+                .attr("cy", 10)
+                .attr("r", 5)
+                .attr("stroke", "black")
+                .attr("fill", "#1a9641");
+            vis.legend
+                .append("circle")
+                .attr("cx", 10)
+                .attr("cy", 30)
+                .attr("r", 5)
+                .attr("stroke", "black")
+                .attr("fill", "#a6d96a");
+            vis.legend
+                .append("circle")
+                .attr("cx", 10)
+                .attr("cy", 50)
+                .attr("r", 5)
+                .attr("stroke", "black")
+                .attr("fill", "#fdae61");
+            vis.legend
+                .append("circle")
+                .attr("cx", 10)
+                .attr("cy", 70)
+                .attr("r", 5)
+                .attr("stroke", "black")
+                .attr("fill", "#d7191c");
+            vis.legend
+                .append("text")
+                .attr("x", 20)
+                .attr("y", 10)
+                .text("0-1 Days")
+                .style("font-size", "15px")
+                .attr("alignment-baseline", "middle");
+            vis.legend
+                .append("text")
+                .attr("x", 20)
+                .attr("y", 30)
+                .text("2-3 Days")
+                .style("font-size", "15px")
+                .attr("alignment-baseline", "middle");
+            vis.legend
+                .append("text")
+                .attr("x", 20)
+                .attr("y", 50)
+                .text("4-5 Days")
+                .style("font-size", "15px")
+                .attr("alignment-baseline", "middle");
+            vis.legend
+                .append("text")
+                .attr("x", 20)
+                .attr("y", 70)
+                .text("6+ Days")
+                .style("font-size", "15px")
+                .attr("alignment-baseline", "middle");
+        } else if (vis.config.colorScaleString == "byMonth") {
+            vis.colorBy = d3
+                .scaleOrdinal()
                 .domain(["9, 10, 11, 12"])
-                .range(["#aff05b","#28ea8d","#2f96e0","#6e40aa"])
+                .range(["#aff05b", "#28ea8d", "#2f96e0", "#6e40aa"]);
 
-            let monthsArray = []
-            for (let i=0;i<vis.data.length;i++){
-                let monthReceived = vis.data[i].REQUESTED_DATE.split('/')[0]
-                monthsArray.push(monthReceived)
+            let monthsArray = [];
+            for (let i = 0; i < vis.data.length; i++) {
+                let monthReceived = vis.data[i].REQUESTED_DATE.split("/")[0];
+                monthsArray.push(monthReceived);
             }
 
-            vis.Dots
-                .data(monthsArray)
-                .attr("fill", function(d){return vis.colorBy(d)})
+            vis.Dots.data(monthsArray).attr("fill", function (d) {
+                return vis.colorBy(d);
+            });
 
-            vis.Dots
-                .data(vis.data)
+            vis.Dots.data(vis.data);
 
-            vis.legend.selectAll('*').remove();
-            vis.legend.append('circle').attr('cx', 10).attr('cy', 10).attr('r', 5).attr('stroke', 'black').attr('fill', '#aff05b')
-            vis.legend.append('circle').attr('cx', 10).attr('cy', 30).attr('r', 5).attr('stroke', 'black').attr('fill', '#28ea8d')
-            vis.legend.append('circle').attr('cx', 10).attr('cy', 50).attr('r', 5).attr('stroke', 'black').attr('fill', '#2f96e0')
-            vis.legend.append('circle').attr('cx', 10).attr('cy', 70).attr('r', 5).attr('stroke', 'black').attr('fill', '#6e40aa')
-            vis.legend.append("text").attr("x", 20).attr("y", 10).text("September").style("font-size", "15px").attr("alignment-baseline","middle")
-            vis.legend.append("text").attr("x", 20).attr("y", 30).text("October").style("font-size", "15px").attr("alignment-baseline","middle")
-            vis.legend.append("text").attr("x", 20).attr("y", 50).text("November").style("font-size", "15px").attr("alignment-baseline","middle")
-            vis.legend.append("text").attr("x", 20).attr("y", 70).text("December").style("font-size", "15px").attr("alignment-baseline","middle")
-        }
-        else if (vis.config.colorScaleString == "Default"){
-            vis.Dots
-                .attr("fill", "steelblue")
+            vis.legend.selectAll("*").remove();
+            vis.legend
+                .append("circle")
+                .attr("cx", 10)
+                .attr("cy", 10)
+                .attr("r", 5)
+                .attr("stroke", "black")
+                .attr("fill", "#aff05b");
+            vis.legend
+                .append("circle")
+                .attr("cx", 10)
+                .attr("cy", 30)
+                .attr("r", 5)
+                .attr("stroke", "black")
+                .attr("fill", "#28ea8d");
+            vis.legend
+                .append("circle")
+                .attr("cx", 10)
+                .attr("cy", 50)
+                .attr("r", 5)
+                .attr("stroke", "black")
+                .attr("fill", "#2f96e0");
+            vis.legend
+                .append("circle")
+                .attr("cx", 10)
+                .attr("cy", 70)
+                .attr("r", 5)
+                .attr("stroke", "black")
+                .attr("fill", "#6e40aa");
+            vis.legend
+                .append("text")
+                .attr("x", 20)
+                .attr("y", 10)
+                .text("September")
+                .style("font-size", "15px")
+                .attr("alignment-baseline", "middle");
+            vis.legend
+                .append("text")
+                .attr("x", 20)
+                .attr("y", 30)
+                .text("October")
+                .style("font-size", "15px")
+                .attr("alignment-baseline", "middle");
+            vis.legend
+                .append("text")
+                .attr("x", 20)
+                .attr("y", 50)
+                .text("November")
+                .style("font-size", "15px")
+                .attr("alignment-baseline", "middle");
+            vis.legend
+                .append("text")
+                .attr("x", 20)
+                .attr("y", 70)
+                .text("December")
+                .style("font-size", "15px")
+                .attr("alignment-baseline", "middle");
+        } else if (vis.config.colorScaleString == "Default") {
+            vis.Dots.attr("fill", "steelblue");
 
             // remove legend if default
-            vis.legend.selectAll('*').remove();
+            vis.legend.selectAll("*").remove();
         }
 
-        vis.Dots
-            .on("mouseleave", function () {
-                //function to add mouseover event
-                if (vis.config.colorScaleString == "byService"){
-                    d3.select(this)
-                        .transition()
-                        .attr("fill", d => vis.colorBy(d.SERVICE_NAME))
-                }
-                else if (vis.config.colorScaleString == "byAgency"){
-                    d3.select(this)
-                        .transition()
-                        .attr("fill", d => vis.colorBy(d.AGENCY_RESPONSIBLE))
-                }
-                else if (vis.config.colorScaleString == "byDate"){
-                    let updatedBetween = []
-                    for (let i=0;i<vis.data.length;i++){
-                        let daysBetween = vis.data[i].UPDATED_DATE.split('/')[1] - vis.data[i].REQUESTED_DATE.split('/')[1];
-                        switch (daysBetween){
-                            case 0:
-                            case 1:
-                                daysBetween = "0-1"
-                                break;
-                            case 2:
-                            case 3:
-                                daysBetween = "2-3"
-                                break;
-                            case 4:
-                            case 5:
-                                daysBetween = "4-5"
-                                break;
-                            default:
-                                daysBetween = "6+"
-                                break;
-
-                        }
-                        updatedBetween.push(daysBetween)
+        vis.Dots.on("mouseleave", function () {
+            //function to add mouseover event
+            if (vis.config.colorScaleString == "byService") {
+                d3.select(this)
+                    .transition()
+                    .attr("fill", (d) => vis.colorBy(d.SERVICE_NAME));
+            } else if (vis.config.colorScaleString == "byAgency") {
+                d3.select(this)
+                    .transition()
+                    .attr("fill", (d) => vis.colorBy(d.AGENCY_RESPONSIBLE));
+            } else if (vis.config.colorScaleString == "byDate") {
+                let updatedBetween = [];
+                for (let i = 0; i < vis.data.length; i++) {
+                    let daysBetween =
+                        vis.data[i].UPDATED_DATE.split("/")[1] -
+                        vis.data[i].REQUESTED_DATE.split("/")[1];
+                    switch (daysBetween) {
+                        case 0:
+                        case 1:
+                            daysBetween = "0-1";
+                            break;
+                        case 2:
+                        case 3:
+                            daysBetween = "2-3";
+                            break;
+                        case 4:
+                        case 5:
+                            daysBetween = "4-5";
+                            break;
+                        default:
+                            daysBetween = "6+";
+                            break;
                     }
-                    vis.colorBy = d3.scaleOrdinal()
-                        .domain(["0-1", "2-3", "4-5", "6+"])
-                        .range(["#1a9641","#a6d96a","#fdae61","#d7191c"])
-                    
-                    vis.Dots
-                        .data(updatedBetween)
-                        .attr("fill", function(d){return vis.colorBy(d)})
-
-                    vis.Dots
-                        .data(vis.data)
-
+                    updatedBetween.push(daysBetween);
                 }
-                else if (vis.config.colorScaleString == "byMonth"){
-                    let monthsArray = []
-                    for (let i=0;i<vis.data.length;i++){
-                        let monthReceived = vis.data[i].REQUESTED_DATE.split('/')[0]
-                        monthsArray.push(monthReceived)
-                    }
+                vis.colorBy = d3
+                    .scaleOrdinal()
+                    .domain(["0-1", "2-3", "4-5", "6+"])
+                    .range(["#1a9641", "#a6d96a", "#fdae61", "#d7191c"]);
 
-                    vis.Dots
-                        .data(monthsArray)
-                        .attr("fill", function(d){return vis.colorBy(d)})
+                vis.Dots.data(updatedBetween).attr("fill", function (d) {
+                    return vis.colorBy(d);
+                });
 
-                    vis.Dots
-                        .data(vis.data)
-                }
-                else if (vis.config.colorScaleString == "Default"){
-                    vis.Dots
-                        .transition()
-                        .attr("fill", "steelblue")
+                vis.Dots.data(vis.data);
+            } else if (vis.config.colorScaleString == "byMonth") {
+                let monthsArray = [];
+                for (let i = 0; i < vis.data.length; i++) {
+                    let monthReceived =
+                        vis.data[i].REQUESTED_DATE.split("/")[0];
+                    monthsArray.push(monthReceived);
                 }
 
-        })
+                vis.Dots.data(monthsArray).attr("fill", function (d) {
+                    return vis.colorBy(d);
+                });
 
-        console.log(vis.config.colorScaleString)
+                vis.Dots.data(vis.data);
+            } else if (vis.config.colorScaleString == "Default") {
+                vis.Dots.transition().attr("fill", "steelblue");
+            }
 
+            //function to add mouseover event
+            d3.select(this)
+                .transition() //D3 selects the object we have moused over in order to perform operations on it
+                .duration("150") //how long we are transitioning between the two states (works like keyframes)
+                .attr("r", 3); //change radius
+
+            d3.select("#tooltip")
+                .style("opacity", 0)
+                .style("background", "#fff");
+        });
+
+        console.log(vis.config.colorScaleString);
     }
 }
