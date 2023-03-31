@@ -1,6 +1,10 @@
 console.log("Hello World");
 
 d3.tsv("data/cincyData.txt").then((data) => {
+    // Initialize scales
+    const colorScale = d3.scaleOrdinal()
+    .range(['#4682b4']) // steel blue
+
     console.log(data);
     console.log(data.length);
     data.forEach((d) => {
@@ -11,6 +15,32 @@ d3.tsv("data/cincyData.txt").then((data) => {
     // Initialize chart and then show it
     leafletMap = new LeafletMap({ parentElement: "#my-map" }, data);
     leafletMap.updateVis();
+
+    // Initialize and render bar chart
+    dayofweekbarchart = new DayOfWeekBarchart({
+      parentElement: '#dayofweekbarchart',
+      colorScale: colorScale
+    }, data);
+    dayofweekbarchart.updateVis();
+
+    // Initialize and render bar chart
+    servicetypebarchart = new ServiceTypeBarchart({
+      parentElement: '#servicetypebarchart',
+    }, data);
+    servicetypebarchart.updateVis();
+
+    // Initialize and render bar chart
+    updatedtimebarchart = new UpdatedTimeBarchart({
+      parentElement: '#updatedtimebarchart',
+    }, data);
+    updatedtimebarchart.updateVis();
+
+    // Initialize and render bar chart
+    zipcodebarchart = new ZipcodeBarchart({
+      parentElement: '#zipcodebarchart',
+    }, data);
+    zipcodebarchart.updateVis();
+
 }).catch(error => console.error(error));
 
 

@@ -1,13 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>D3 Project Starter Template</title>
+    <title>Project 2 Map</title>
     <meta charset="UTF-8">
     <link rel="icon" href="data:;base64,iVBORwOKGO=" />
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/leaflet.css">
+    <style>
+    h1 {text-align: center;}
+    h5 {text-align: center;}
+    h6 {text-align: center;}
+    </style>
 </head>
 <body>    
+    <div id="header">
+        <h1>Project 2: 3-1-1</h1>
+        <h5>Jack Riley, Ryan Richter, Binh Luong</h5>
+        <h6><a href=https://data.cincinnati-oh.gov/Thriving-Neighborhoods/Cincinnati-311-Non-Emergency-Service-Requests/4cjh-bm8b>Data used: Sept 2022 - Dec 2022</a></h6>
+    </div>
+
     <!-- Add HTML content, SVG drawing area, ... -->
     <div id="my-map"></div>
     
@@ -34,6 +45,17 @@
 
     <div id="legend"></div>
 
+    <div class = "top-graph-container">
+        <div class="margin-right"><svg id="zipcodebarchart"></svg></div>
+        <div class="margin-right"><svg id="dayofweekbarchart"></svg></div>
+        <div class="margin-right"><svg id="servicetypebarchart"></svg></div>
+        <div class="margin-right"><svg id="updatedtimebarchart"></svg></div>
+    </div>
+
+    <div class="source">
+        <a href="https://www.city-data.com/zipmaps/Cincinnati-Ohio.html">Cincinnati Zip Code Map</a>
+    </div>
+
     <!-- D3 bundle -->
     <script src="js/d3.v6.min.js"></script>
     <script src="js/leaflet.js"></script>
@@ -41,5 +63,9 @@
     <!-- Our JS code -->
     <script src="js/main.js"></script>
     <script src="js/leafletMap.js"></script>
+    <script src="js/dayofweekbarchart.js"></script>
+    <script src="js/servicetypebarchart.js"></script>
+    <script src="js/updatedtimebarchart.js"></script>
+    <script src="js/zipcodebarchart.js"></script>
 </body>
 </html>
