@@ -20,43 +20,55 @@
     </div>
 
     <!-- Add HTML content, SVG drawing area, ... -->
-    <div id="my-map"></div>
-    <div id="tooltip"></div>
-
-    <div id="buttons">
-        <p><b>Sort by: </b></p>
-        <button type="button" class="btn btn-link btn-sm" id="defaultbutton">
-            Default
-        </button>
-        <button type="button" class="btn btn-link btn-sm" id="servicebutton">
-            Service Type
-        </button>
-        <button type="button" class="btn btn-link btn-sm" id="agencybutton">
-            Agency
-        </button>
-        <button type="button" class="btn btn-link btn-sm" id="datebutton">
-            Days Before Updated
-        </button>
-        <button type="button" class="btn btn-link btn-sm" id="monthbutton">
-            Month
-        </button>
-    </div>
-
-    <div id="legend"></div>
-
-    <svg id="timebar"></svg>
-    <div id="tooltip-bar"></div>
-    
-    <div class = "top-graph-container">
-        <div class="margin-right"><svg id="zipcodebarchart"></svg></div>
-        <div class="margin-right"><svg id="dayofweekbarchart"></svg></div>
-        <div class="margin-right"><svg id="servicetypebarchart"></svg></div>
-        <div class="margin-right"><svg id="updatedtimebarchart"></svg></div>
+    <div class="main-container flex">
+        <div class="big-container">
+            <div class="map-container flex">
+                <div class="legend-container">
+                    <div id="buttons">
+                        <p><b>Sort by: </b></p>
+                        <button type="button" class="btn btn-link btn-sm" id="defaultbutton">
+                            Default
+                        </button>
+                        <button type="button" class="btn btn-link btn-sm" id="servicebutton">
+                            Service Type
+                        </button>
+                        <button type="button" class="btn btn-link btn-sm" id="agencybutton">
+                            Agency
+                        </button>
+                        <button type="button" class="btn btn-link btn-sm" id="datebutton">
+                            Days Before Updated
+                        </button>
+                        <button type="button" class="btn btn-link btn-sm" id="monthbutton">
+                            Month
+                        </button>
+                    </div>
+                    <div id="legend" style="margin: 10px"></div>
+                    <svg id="updatedtimebarchart"></svg>
+                </div>  
+                <div id="my-map"></div>
+                <div id="tooltip"></div>
+            </div>
+            <svg id="timebar"></svg>
+            <div id="tooltip-bar"></div>
+            <div class="timebar-labels flex">
+                <p class="month-label">September</p>
+                <p class="month-label">October</p>
+                <p class="month-label">November</p>
+                <p class="month-label">December</p>
+            </div>
+        </div>
+        <div class = "graph-container">
+            <div class="margin-right"><svg id="zipcodebarchart"></svg></div>
+            <div class="margin-right"><svg id="dayofweekbarchart"></svg></div>
+            <div class="margin-right"><svg id="servicetypebarchart"></svg></div>
+        </div>
     </div>
 
     <div class="source">
         <a href="https://www.city-data.com/zipmaps/Cincinnati-Ohio.html">Cincinnati Zip Code Map</a>
     </div>
+
+    <!-- <svg id="chart"></svg> -->
 
     <!-- D3 bundle -->
     <script src="js/d3.v6.min.js"></script>
@@ -70,5 +82,6 @@
     <script src="js/updatedtimebarchart.js"></script>
     <script src="js/zipcodebarchart.js"></script>
     <script src="js/timebar.js"></script>
+    <!-- <script src="js/temp.js"></script> -->
 </body>
 </html>
